@@ -9,24 +9,24 @@ public class EnemyPatrol : StatesBaseClass
     private TestAgent agent;
     private FSMTransitions transition;
     public StatesBaseClass fleestate;
+    // Action
+    public ActionBase KickAction;
 
     public override void OnEnter(FSMTransitions enemy) 
     {
         agent = enemy.GetComponent<TestAgent>();
-        agent.MoveTo(new Vector3(-12.5f, -0.02f, -33.9f));
+        agent.MoveTo(new Vector3(-3.5f, -0.02f, -36.9f));
     }
     public override void OnExit(FSMTransitions enemy) 
     {
-        //agent = enemy.GetComponent<TestAgent>();
-        //agent.SetAnimation("Kick", false);
+       // KickAction.OnAnimation(enemy.gameObject);
     }
     public override void UpdateState(FSMTransitions enemy) 
     {
         
-        if (Vector3.Distance(enemy.transform.position, new Vector3(-12.5f, -0.02f, -33.9f)) < 1f)
+        if (Vector3.Distance(enemy.transform.position, new Vector3(-3.5f, -0.02f, -36.9f)) < 1f)
         {
-            //agent = enemy.GetComponent<TestAgent>();
-            //agent.SetAnimation("Kick", true);
+           // KickAction.OnAnimation(enemy.gameObject);
         }
 
     }

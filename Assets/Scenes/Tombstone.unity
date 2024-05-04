@@ -54946,11 +54946,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea2683dd2f484fe4e8d6e913673055fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: {fileID: 11400000, guid: 527cf3a2af221f5489e08ddd22e07805, type: 2}
-  EnemyIdle: {fileID: 11400000, guid: 40c136de8dad1cc4e9049cf39a520480, type: 2}
-  EnemyPatrol: {fileID: 11400000, guid: 527cf3a2af221f5489e08ddd22e07805, type: 2}
-  EnemyAssault: {fileID: 11400000, guid: ca867458ebcd6ba43a7b678c9e438b09, type: 2}
-  EnemyFlee: {fileID: 11400000, guid: 61324bf0a7aac4a4aace939dc4927d1b, type: 2}
+  currentState: {fileID: 11400000, guid: fda598ff42b1eb944b2eac7b015ceacb, type: 2}
+  EnemyIdle: {fileID: 11400000, guid: d0fde591d87910f47a60d8df073fdf52, type: 2}
+  EnemyPatrol: {fileID: 11400000, guid: fda598ff42b1eb944b2eac7b015ceacb, type: 2}
+  EnemyAssault: {fileID: 11400000, guid: 20c7a744648a33846bd22b00927febe5, type: 2}
+  EnemyFlee: {fileID: 11400000, guid: e0a535b95d4a7704fa1ccd7c85bf09a8, type: 2}
 --- !u!1001 &1702502448
 PrefabInstance:
   m_ObjectHideFlags: 0

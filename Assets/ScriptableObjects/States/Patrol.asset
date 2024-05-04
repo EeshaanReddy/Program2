@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05d0037d341473b4c89f3a3c35ad1507, type: 3}
-  m_Name: Assault_Belle
+  m_Script: {fileID: 11500000, guid: f816aa98d47452d4eb292d9c89a6582e, type: 3}
+  m_Name: Patrol
   m_EditorClassIdentifier: 
-  fleestate: {fileID: 11400000, guid: 61324bf0a7aac4a4aace939dc4927d1b, type: 2}
-  PunchAction: {fileID: 0}
+  fleestate: {fileID: 11400000, guid: e0a535b95d4a7704fa1ccd7c85bf09a8, type: 2}
+  KickAction: {fileID: 11400000, guid: 50b1767b18cca0847b468e83e480f1cb, type: 2}

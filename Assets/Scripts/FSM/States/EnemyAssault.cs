@@ -6,29 +6,28 @@ using Testagent;
 public class EnemyAssault : StatesBaseClass
 {
     private TestAgent agent;
-    public GameObject Behan;
+    //public GameObject Behan;
     private FSMTransitions transition;
     public StatesBaseClass fleestate;
+    // Action
+    public ActionBase PunchAction;
 
     public override void OnEnter(FSMTransitions enemy)
     {
         agent = enemy.GetComponent<TestAgent>();
-        agent.MoveTo(Behan.transform.position);
+        agent.MoveTo(new Vector3(-3.5f, -0.02f, -36.9f));
     }
     public override void OnExit(FSMTransitions enemy) 
     {
-        agent = enemy.GetComponent<TestAgent>();
-        agent.SetAnimation("Punch", false);
-    
+        PunchAction.OffAnimation(enemy.gameObject);
+
     }
     public override void UpdateState(FSMTransitions enemy) 
     {
 
-        if (Vector3.Distance(enemy.transform.position, Behan.transform.position) < 1f)
+        if (Vector3.Distance(enemy.transform.position, new Vector3(-3.5f, -0.02f, -36.9f)) < 1f)
         {
-            transition = enemy.GetComponent<FSMTransitions>();
-            agent.SetAnimation("Punch", true);
-            transition.TransitionToState(transition.EnemyIdle);
+            PunchAction.OnAnimation(enemy.gameObject);
         }
     }
 }
