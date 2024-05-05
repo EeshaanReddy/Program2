@@ -12,10 +12,29 @@ public class SenseManager : MonoBehaviour
 
     private GameObject marshall;
 
+    public List<GameObject> bandits;
+
     private void Awake()
     {
         marshall = GameObject.FindWithTag("Player");
         manager = this;
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.H))
+            MakeSound();
+    }
+
+    public void MakeSound()
+    {
+        foreach (GameObject bandit in bandits)
+        {
+            if (CanHear(bandit))
+            {
+                bandit.GetComponent<GuardManager>().guard();
+            }
+        }
     }
 
     public bool CanSee(GameObject viewer)
@@ -38,5 +57,22 @@ public class SenseManager : MonoBehaviour
         if (ray.collider.gameObject.tag.Equals("Player")) 
             return true;
         return false;
+    }
+
+    public bool CanHear(GameObject listener)
+    {
+        if (Vector3.Distance(marshall.transform.position, listener.transform.position) > 10) return false;
+        GameObject marshallblding = null;
+        RaycastHit hit;
+        Physics.Raycast(marshall.transform.position, Vector3.up, out hit);
+        if(hit.collider != null)
+            marshallblding = hit.collider.gameObject;
+        if (marshallblding != null && Physics.Raycast(listener.transform.position, Vector3.up, out hit))
+        {
+            if (marshallblding.name.Equals(hit.collider.gameObject.name)) return true;
+        }
+        if (hit.collider == null) return true;
+        if (!hit.collider.gameObject.GetComponent<Building>().open) return false;
+        return true;
     }
 }

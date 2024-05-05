@@ -8,7 +8,7 @@ namespace Testagent
     {
 
         // Agent AI
-        NavMeshAgent agent;
+        public NavMeshAgent agent;
         // animation controller
         Animator animController;
         // the player's character
