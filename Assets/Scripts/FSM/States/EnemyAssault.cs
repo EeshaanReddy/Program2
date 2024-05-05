@@ -5,17 +5,21 @@ using Testagent;
 [CreateAssetMenu(menuName = "FSM/States/Attack")]
 public class EnemyAssault : StatesBaseClass
 {
-    private TestAgent agent;
     //public GameObject Behan;
     private FSMTransitions transition;
     public StatesBaseClass fleestate;
+    private bool started = false;
     // Action
     public ActionBase PunchAction;
+    private float wait = 3;
 
     public override void OnEnter(FSMTransitions enemy)
     {
+        started = false;
+        _animator = enemy.GetComponent<Animator>();
         agent = enemy.GetComponent<TestAgent>();
-        agent.MoveTo(new Vector3(-3.5f, -0.02f, -36.9f));
+        _animator.SetBool("Walk", true);
+        agent.MoveTo(new Vector3(-11.596f, -0.006f, -35.023f));
     }
     public override void OnExit(FSMTransitions enemy) 
     {
@@ -24,10 +28,26 @@ public class EnemyAssault : StatesBaseClass
     }
     public override void UpdateState(FSMTransitions enemy) 
     {
-
-        if (Vector3.Distance(enemy.transform.position, new Vector3(-3.5f, -0.02f, -36.9f)) < 1f)
+        if (wait > 0)
         {
-            PunchAction.OnAnimation(enemy.gameObject);
+            wait -= Time.deltaTime;
+            return;
         }
+        if (atTarget())
+        {
+            if (!started)
+            {
+                started = true;
+                agent.StartCoroutine(waitToBreak(enemy));
+                PunchAction.OnAnimation(enemy.gameObject);
+            }
+        }
+    }
+
+    private IEnumerator waitToBreak(FSMTransitions enemy)
+    {
+        yield return new WaitForSeconds(1);
+        transition = enemy.GetComponent<FSMTransitions>();
+        transition.TransitionToState(transition.EnemyJailbreak);
     }
 }

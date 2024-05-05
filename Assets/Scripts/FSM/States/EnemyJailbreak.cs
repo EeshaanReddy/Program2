@@ -8,8 +8,7 @@ using UnityEngine.AI;
 public class EnemyJailbreak : StatesBaseClass
 {
     private FSMTransitions transition;
-    private TestAgent agent;
-    private List<Progress> BTreeAttempts = new List<Progress>( );
+    private List<Progress> BTreeAttempts;
     private bool unlocked;
 
     private enum Progress
@@ -22,16 +21,17 @@ public class EnemyJailbreak : StatesBaseClass
 
     public override void OnEnter(FSMTransitions enemy)
     {
-        Debug.Log("Entering Jailbreak State");
-        for(int i =0; i<4; i++)
+        _animator = enemy.GetComponent<Animator>();
+        BTreeAttempts = new List<Progress>();
+        for (int i = 0; i < 4; i++)
             BTreeAttempts.Add(Progress.unattempted);
         agent = enemy.GetComponent<TestAgent>();
-        if (Random.value < 0.25f) unlocked = true;
+        unlocked = false;
+        if (Random.Range(0f, 1f) < 0.25f) unlocked = true;
     }
 
     public override void OnExit(FSMTransitions enemy)
     {
-        Debug.Log("Exiting Jailbreak State");
     }
 
     public override void UpdateState(FSMTransitions enemy)
@@ -42,18 +42,18 @@ public class EnemyJailbreak : StatesBaseClass
             return;
         else if (BTreeAttempts[0] == Progress.success)
         {
-            if (BTreeAttempts[4] == Progress.unattempted)
+            if (BTreeAttempts[3] == Progress.unattempted)
             {
                 LetBillyOut(enemy);
             }
         }
-        else if(BTreeAttempts[1] == Progress.unattempted)
+        else if (BTreeAttempts[1] == Progress.unattempted)
             UseKeyToOpenCell();
         else if (BTreeAttempts[1] == Progress.inprogress)
             return;
         else if (BTreeAttempts[1] == Progress.success)
         {
-            if (BTreeAttempts[4] == Progress.unattempted)
+            if (BTreeAttempts[3] == Progress.unattempted)
             {
                 LetBillyOut(enemy);
             }
@@ -64,7 +64,7 @@ public class EnemyJailbreak : StatesBaseClass
             return;
         else if (BTreeAttempts[2] == Progress.success)
         {
-            if (BTreeAttempts[4] == Progress.unattempted)
+            if (BTreeAttempts[3] == Progress.unattempted)
             {
                 LetBillyOut(enemy);
             }
@@ -74,15 +74,12 @@ public class EnemyJailbreak : StatesBaseClass
     private IEnumerator Open(int index)
     {
         BTreeAttempts[index] = Progress.inprogress;
-        agent.MoveTo(new Vector3(-9.979f,0f,-37.373f)); // move to cell door
-        while (true)
-        {
-            float dist=agent.agent.remainingDistance;
-            if (!float.IsInfinity(dist) && agent.agent.pathStatus == NavMeshPathStatus.PathComplete &&
-                agent.agent.remainingDistance == 0) break;
-            yield return new WaitForSeconds(0.05f);
-        }
-
+        _animator.SetBool("Walk", true);
+        agent.MoveTo(new Vector3(-9.979f, 0f, -37.373f)); // move to cell door
+        yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(atTarget);
+        _animator.SetBool("Walk", false);
+        yield return new WaitForSeconds(0.5f);
         if (unlocked)
         {
             GameObject door = GameObject.Find("JailDoor");
@@ -101,8 +98,8 @@ public class EnemyJailbreak : StatesBaseClass
         float scalar = 45;
         while (amt > 0)
         {
-            door.transform.Rotate(0,scalar*0.025f,0);
-            amt -= scalar * Time.deltaTime;
+            door.transform.Rotate(0, scalar * 0.025f, 0);
+            amt -= scalar * 0.025f;
             yield return new WaitForSeconds(0.025f);
         }
     }
@@ -116,17 +113,15 @@ public class EnemyJailbreak : StatesBaseClass
     {
         BTreeAttempts[1] = Progress.inprogress;
         agent.MoveTo(new Vector3(-10.779f, 0f, -34.32f)); // move to key
-        while (true)
-        {
-            float dist=agent.agent.remainingDistance;
-            if (!float.IsInfinity(dist) && agent.agent.pathStatus == NavMeshPathStatus.PathComplete &&
-                agent.agent.remainingDistance == 0) break;
-            yield return new WaitForSeconds(0.05f);
-        }
-        agent.GetComponent<Animator>().SetBool("PickUp", true);
+        _animator.SetBool("Walk", true);
+        yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(atTarget);
+        _animator.SetBool("Walk", false);
+        _animator.SetBool("PickUp", true);
         yield return new WaitForSeconds(2);
+        _animator.SetBool("PickUp", false);
         Destroy(GameObject.Find("Rusty_Key_01"));
-        if (Random.value < 0.5)
+        if (Random.Range(0f, 1f) < 0.5)
         {
             unlocked = true;
         }
@@ -145,39 +140,41 @@ public class EnemyJailbreak : StatesBaseClass
 
     private IEnumerator blow()
     {
-        agent.MoveTo(new Vector3(11.924f, 0, -28.256f));
-        while (true)
-        {
-            float dist=agent.agent.remainingDistance;
-            if (!float.IsInfinity(dist) && agent.agent.pathStatus == NavMeshPathStatus.PathComplete &&
-                agent.agent.remainingDistance == 0) break;
-            yield return new WaitForSeconds(0.05f);
-        }
-        agent.GetComponent<Animator>().SetBool("PickUp", true);
+        BTreeAttempts[2] = Progress.inprogress;
+        GameObject dynamite = Dynamite.dynamite;
+        agent.MoveTo(new Vector3(3.857f, -0.006f, -27.813f));
+        _animator.SetBool("Walk", true);
+        yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(atTarget);
+        _animator.SetBool("Walk", false);
+        _animator.SetBool("PickUp", true);
         yield return new WaitForSeconds(2);
-        GameObject.Find("Dynamite_Stick_01").SetActive(false);
-        agent.MoveTo(new Vector3(-9.979f,0f,-37.373f)); // move to cell door
-        while (true)
-        {
-            float dist=agent.agent.remainingDistance;
-            if (!float.IsInfinity(dist) && agent.agent.pathStatus == NavMeshPathStatus.PathComplete &&
-                agent.agent.remainingDistance == 0) break;
-            yield return new WaitForSeconds(0.05f);
-        }
-        agent.GetComponent<Animator>().SetBool("PickUp", true);
+        dynamite.SetActive(false);
+        _animator.SetBool("PickUp", false);
+        _animator.SetBool("Walk", true);
+        agent.MoveTo(new Vector3(-9.979f, 0f, -37.373f)); // move to cell door
+        yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(atTarget);
+        _animator.SetBool("Walk", false);
+        _animator.SetBool("PickUp", true);
         yield return new WaitForSeconds(2);
-        GameObject.Find("Dynamite_Stick_01").SetActive(true);
-        GameObject.Find("Dynamite_Stick_01").transform.position = new Vector3(-9.292f, 0, -37.764f);
-        agent.MoveTo(new Vector3(11.924f, 0, -26.256f));
+        dynamite.SetActive(true);
+        dynamite.transform.position = new Vector3(-9.292f, 0, -37.764f);
+        _animator.SetBool("Walk", true);
+        _animator.SetBool("PickUp", false);
+        agent.MoveTo(new Vector3(-11.924f, 0, -36.256f));
+        yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(atTarget);
+        _animator.SetBool("Walk", false);
         yield return new WaitForSeconds(3);
         Destroy(GameObject.Find("Dynamite_Stick_01"));
         Destroy(GameObject.Find("JailDoor"));
         Debug.Log("Boom");
-        BTreeAttempts[3] = Progress.success;
+        BTreeAttempts[2] = Progress.success;
     }
 
     private void LetBillyOut(FSMTransitions enemy)
     {
-        //stub, here in case we need it for something
+        AllFlee.allFlee.flee();
     }
 }

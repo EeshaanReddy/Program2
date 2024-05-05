@@ -8,16 +8,21 @@ using UnityEngine.AI;
 public class GuardManager : MonoBehaviour
 {
     private float waitTime = 0;
+
     private void Update()
     {
-        if (SenseManager.manager.CanSee(gameObject))
+        if (SenseManager.manager.CanSee(gameObject) && waitTime <= 0)
         {
             guard();
         }
-
-        waitTime -= Time.deltaTime;
-        if(waitTime <= 0)
+        if (waitTime > 0)
+        {
+            waitTime -= Time.deltaTime;
+        }
+        if (waitTime <= 0 && GetComponent<Animator>().GetBool("Crouch"))
+        {
             stop();
+        }
     }
 
     public void guard()
@@ -25,15 +30,16 @@ public class GuardManager : MonoBehaviour
         GetComponent<FSMTransitions>().enabled = false;
         GetComponent<Animator>().SetBool("Crouch", true);
         GetComponent<NavMeshAgent>().isStopped = true;
-        waitTime = 3;
+        waitTime = 5; 
     }
 
     public void stop()
     {
         FSMTransitions banditFSM = GetComponent<FSMTransitions>();
         banditFSM.enabled = true;
+        GetComponent<Animator>().SetBool("Crouch", false);
         GetComponent<NavMeshAgent>().isStopped = false;
         banditFSM.TransitionToState(banditFSM.currentState);
-        GetComponent<Animator>().SetBool("Crouch", false);
+        
     }
 }

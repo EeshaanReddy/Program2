@@ -6,7 +6,6 @@ using Testagent;
 [CreateAssetMenu(menuName = "FSM/States/Idle")]
 public class EnemyIdle : StatesBaseClass
 {
-    private TestAgent agent;
     private FSMTransitions transotion;
 
 

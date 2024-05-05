@@ -9,6 +9,7 @@ public class FSMTransitions : MonoBehaviour
     public StatesBaseClass EnemyPatrol;
     public StatesBaseClass EnemyAssault;
     public StatesBaseClass EnemyFlee;
+    public StatesBaseClass EnemyJailbreak;
 
     void Start()
     {
