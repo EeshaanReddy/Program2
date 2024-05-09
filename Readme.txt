@@ -36,6 +36,15 @@ C: Crouch down
 H: Play Harmonica (Make Sound)
 T: Move Bandit to Player Location
 
+FSM: The bandits have states such as assault, flee, idle, and patrol.
+key code ‘Alpha1’ make Belle Assault and Ike Patrol, while key code ‘Alpha2’ make Ike
+Assault and Belle Patrol.
+The bandit in jail is unable to get out because of issues we are encountering in the navmesh.
+
+BT:
+The agent attempts to use dynamite to blast the jail door after all attempts to open door fails.
+
+
 Credits:
  
 Sample code by Leonard D. Brown, University of Arizona.
